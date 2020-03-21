@@ -1,0 +1,35 @@
+{
+	// 清单文件版本，待定
+	"manifest_version": 2,
+	// 插件名称待定
+	"name": "Chrome插件demo",
+	"version": "1.0",
+	//插件描述待定
+	"description": "中南大学chrome插件",
+	"author": "badegg",
+	"icons":
+	{
+		"48": "icon.png",
+		"128": "icon.png"
+	},
+	"browser_action": 
+	{
+		"default_icon": "icon.png",
+		"default_popup": "popup.html"
+	},
+	"content_scripts": 
+	[
+		{
+			"matches": ["https://www.baidu.com/*"],
+			"js": ["content-script.js"]
+		}
+	],
+	"web_accessible_resources": 
+	[
+		"inject.js"
+	],
+	"chrome_url_overrides":
+	{
+		"newtab": "newtab.html"
+	}
+}
