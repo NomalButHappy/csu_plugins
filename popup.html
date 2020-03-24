@@ -3,18 +3,28 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>表格</title>
-		<link rel="stylesheet" href="css/table.css" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/tablecellsselection.css">
 		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
 		<script type="text/javascript" src="js/table.js"></script>
+		<style>
+        td, th {text-align: center;}
+        .table-bordered>tbody>tr>td, .table-bordered>tbody>tr>td, .table>thead>tr>th {vertical-align: middle;}
+        .text-muted{color: #fff;}
+        .desc{font-size:1.2em;font-weight: 600;padding: 2em 0 1em;position: relative;line-height: 1.2}
+        .desc:after{
+        	content: '';
+        	position: absolute;
+        	width: 20em;
+        	height: 2px;
+        	background-color: #d5d6e2;
+        	left: calc(100% / 2 - 10em);
+        	bottom: 0;
+        }
+      </style>
 	</head>
-	<body>
-		<div>
-			<table id="tb" >
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-				</tr>
-			</table>
-		</div>
+	<body id>
+		<table class="table table-bordered" summary="Table selection with plugin" id="tb">
+		</table>
 	</body>
+</html>
