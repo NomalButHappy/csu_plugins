@@ -1,38 +1,35 @@
 $(function(){
-	var str=[
-	{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},
-	{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},
-	{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},
-	{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},
-	{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""}
-	];
-	obj=eval(str);
+	if ( typeof(localStorage.temp) == "undefined" ){
+		console.log("没有");
+		str = [["","","","","","",""],
+		["","","","","","",""],
+		["","","","","","",""],
+		["","","","","","",""],
+		["","","","","","",""],
+		["","","","","","",""],
+		];
+		
+		localStorage.setItem("temp",str);
+		console.log(localStorage.getItem("temp"));
+	} else {
+		console.log("有");
+		console.log(localStorage.getItem("temp"));
+	}
+	
+	
+	
+	var obj = localStorage.getItem("temp").split(",");
+	console.log(obj);
 	  var ht = '<thead><tr><th>Table table</th><th>Mon.</th><th>Tue.</th><th>Wed.</th><th>Thu.</th><th>Fri.</th><th>Sat.</th><th>Sun.</th></tr></thead><tbody>';
-	  for(var i=0;i<obj.length;i++){
+	  for(var i = 0 ; i < 6 ; i++){
 	    ht = ht+'<tr>';
 		ht = ht + '<td>' + String(2*i+1) + '~' + String(2*i + 2) + '</td>';
-	    ht = ht + '<td>' + obj[i].Mon + '</td>';
-	    ht = ht + '<td>' + obj[i].Tue + '</td>';
-	    ht = ht + '<td>' + obj[i].Wed + '</td>';
-	    ht = ht + '<td>' + obj[i].Thu + '</td>';
-		ht = ht + '<td>' + obj[i].Fri + '</td>';
-		ht = ht + '<td>' + obj[i].Sat + '</td>';
-		ht = ht + '<td>' + obj[i].Sun + '</td>';
+		for(var j = 0 ; j < 7 ; j++)
+		{
+			ht = ht + '<td>' + obj[7*i+j]+ '</td>';
+		}
 	    ht = ht+'</tr>';
 	  }
 	  ht = ht + '</tbody>'
 	  $('#tb').append(ht);
 })
-
-
-function load(name) {
-    let xhr = new XMLHttpRequest(),
-        okStatus = document.location.protocol === "file:" ? 0 : 200;
-    xhr.open('GET', name, false);
-    xhr.overrideMimeType("text/html;charset=utf-8");//默认为utf-8
-    xhr.send(null);
-    return xhr.status === okStatus ? xhr.responseText : null;
-}
- 
-let text = load("data/data.txt");
-console.log(text);

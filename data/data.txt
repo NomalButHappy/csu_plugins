@@ -1,1 +1,0 @@
-[{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""},{Mon:"计算机图形学", Tue:"机器学习" , Wed:"", Thu:"上个吉儿课", Fri:"", Sat:"", Sun:""}]
