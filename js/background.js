@@ -125,6 +125,8 @@ function message(name, msg, time, url, imgurl)
 		this.imgurl = imgurl;
 }
 
+//服务器类
+var NotifyServer = new Object();
 NotifyServer.start = function(interval){
 	// 参数为每次监听时间间隔（频率）
 	// 开始监听后， 定时循环对每个保存路径进行访问， 当发现未收录的通知时收录并发送通知
@@ -226,5 +228,4 @@ var work = setInterval(clock,3000);
 
 var options;  //配置信息
 var icon = 'img/icon.png';  //插件哦
-var NotifyServer = new Object();
 NotifyServer.messages=[];  //储存通知
