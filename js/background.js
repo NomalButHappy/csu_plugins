@@ -71,9 +71,9 @@ function notify_many(title, items, iconurl)
 		items: items,
 	});
 }
- chrome.notifications.onClicked.addListener(function(notificationId, byUser){
+chrome.notifications.onClicked.addListener(function(notificationId, byUser){
 	openUrlNewTab('popup.html');
- });
+});
  
  //读取设置数据
  async function load_options(val)
@@ -114,10 +114,10 @@ function getMessages()
 	return NotifyServer.messages;
 }
 
-function message(name, msg, time, url, imgurl)
+function message(title, msg, time, url, imgurl)
 {
 	//消息类
-	this.title = name;
+	this.title = title;
 	this.message = msg;
 	this.time = time;
 	this.url = url;
@@ -132,19 +132,35 @@ NotifyServer.start = function(interval){
 	// 开始监听后， 定时循环对每个保存路径进行访问， 当发现未收录的通知时收录并发送通知
 	// 此外，监听刚开始时理论上会进行一大波通知收录，届时会用到多条消息获取
 	// 每次监听后都会更新最近更新时间。获取通知时只会获取在上次更新时间后出现的通知
-	this.listener = setInterval(chrome.storage.sync.get({lasttime: new Date()}, function(items){
+	// 最初开始监听获得七天以内的消息
+	this.listener = setInterval(chrome.storage.sync.get({lasttime: new Date(new Date()-86400000*7)}, function(items){
 		lasttime = items['lasttime'];
 		getmessages = [];
 		//获取的同时检查消息是否有重复
 		function check(messages){
 			//过滤掉重复的消息并返回新的消息列表
+			res = [];
+			messages.forEach((item,index,array)=>{
+				for(i=0;i<NotifyServer.messages.length;i++)
+				{
+					msgi=NotifyServer.messages[i];
+					if(msgi.time<item.time)
+						break;
+					if(item.time==msgi.time&&item.message==msgi.message&&item.title==msgi.time)
+						return;
+				}
+				res.push(item);
+			});
+			return res;
 		}
 		//整理未重复消息，按种类播送
 		//暂不支持图片消息
 		for(i in this.targets)
 		{
-			tarmessages=check(i.get(lasttime));
-			getmessages.push.apply(getmessages,tarmessages);
+			i.get(lasttime,function(tarmsgs){
+				tarmsgs=check(tarmsgs);
+				getmessages.push.apply(getmessages,tarmsgs);
+			});
 		}
 		getmessages.sort(function(a,b){if(a.time>b.time) return 1; else return 0;}); //对消息按时间进行排序
 		if(getmessages.length>1)
@@ -155,7 +171,7 @@ NotifyServer.start = function(interval){
 		else if(getmessages.length==1)
 			notify(getmessages[0]);
 		NotifyServer.messages.unshift.apply(NotifyServer.messages,getmessages);
-		chrome.storage.sync.set({lasttime:lasttime},function(){console.log('Catch messages at: '+lasttime.toString())}); //更新时间
+		chrome.storage.sync.set({lasttime:new Date()},function(){console.log('Catch messages at: '+lasttime.toString())}); //更新时间
 	}), interval);
 	return this.listener;
 };
@@ -183,7 +199,7 @@ var target={
 		res.get = getf;
 		return res;
 	},
-	create:function(name, url){  
+	create:function(name, url){
 	    // 用来产生一条待监听的路径
 		res = this; 
 		res.name = name;
@@ -193,12 +209,24 @@ var target={
 };
 alltags = {}; //tag名为键，值为对应的target对象
 //撰写爬取程序
-alltags['中南大学新闻网']=target.newtag('中南大学新闻网',function(){
+alltags['中南大学新闻网']=target.newtag('中南大学新闻网',function(lasttime,callback){
 	
 });
-alltags['中南大学计算机院']=target.newtag('中南大学计算机院',function(){
-	
-}); 
+alltags['中南大学计算机院']=target.newtag('中南大学计算机院',function(lasttime,callback){
+	if(!check_url(this.url))
+		return;
+	$.get(url,function(data){
+		dd=parseDom(data.responseText);
+		remsg = [];
+		name = this.name;
+		dd.find('.download:first ul li').each(function(){
+			msg = new message(title=name,msg=$(this).children('a').text(),time=new Date($(this).children('span').text()),url=$(this).children('a').attr('href'));
+			if(new Date(msg.time)>lasttime)
+				remsg.push(msg);
+		});
+		callback(remsg);
+	});
+});
 
 //设置等待爬取链接
 function settargets(tarlist,callback)
@@ -213,6 +241,13 @@ function settargets(tarlist,callback)
 		callback();
 }
 
+//解析dom字符串
+function parseDom(arg) {
+　　 var objE = document.createElement("div");
+　　 objE.innerHTML = arg;
+　　 return $(objE);
+};
+
 /*部分测试
 function clock()
 {
@@ -226,6 +261,15 @@ var work = setInterval(clock,3000);
 //notify_many("ayaya",test_items);
 */
 
+
 var options;  //配置信息
+function check_url(str){
+	// 检查字符串是否是一个url
+	part=/(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/i;
+	if(part.exec(str))
+		return true;
+	else
+		return false;
+};
 var icon = 'img/icon.png';  //插件哦
 NotifyServer.messages=[];  //储存通知
