@@ -155,6 +155,7 @@ NotifyServer.start = function(interval){
 		}
 		//整理未重复消息，按种类播送
 		//暂不支持图片消息
+		//同步执行异步操作效率很差，后面需要优化
 		for(i in this.targets)
 		{
 			i.get(lasttime,function(tarmsgs){
@@ -212,10 +213,10 @@ alltags = {}; //tag名为键，值为对应的target对象
 alltags['中南大学新闻网']=target.newtag('中南大学新闻网',function(lasttime,callback){
 	
 });
-alltags['中南大学计算机院']=target.newtag('中南大学计算机院',function(lasttime,callback){
+alltags['中南大学计算机院']=target.newtag('中南大学计算机院',async function(lasttime,callback){
 	if(!check_url(this.url))
 		return;
-	$.get(url,function(data){
+	await $.get(url,function(data){
 		dd=parseDom(data.responseText);
 		remsg = [];
 		name = this.name;
