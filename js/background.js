@@ -238,8 +238,22 @@ function settargets(tarlist,callback)
 		targets.push(alltags[tar.tag].create(tar.name,tar.url));
 	}
 	NotifyServer.targets = targets;
+	chrome.storage.sync.set({targets:targets});
 	if(callback)
 		callback();
+}
+function addtarget(tar, callback)
+{
+	NotifyServer.targets.push(alltags[tar.tag].create(tar.name,tar.url));
+	chrome.storage.sync.set({targets:NotifyServer.targets});
+}
+function deltarget(name,callback)
+{
+	NotifyServer.targets.forEach(function(item, index, arr) {
+    if(item.name === name) {
+        NotifyServer.targets.splice(index, 1);
+    }
+});
 }
 
 //解析dom字符串
