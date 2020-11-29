@@ -1,0 +1,20 @@
+#main
+{
+	margin:0 auto;
+	max-width:800px;
+}
+
+th:last-child
+{
+	width:100px;
+}
+
+.hid
+{
+	visibility: hidden;
+}
+
+tr:hover td .hid
+{
+	visibility: visible;
+}

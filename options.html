@@ -3,13 +3,47 @@
 <head>
 	<meta charset="utf-8"/>
 	<link rel="stylesheet" href="layui/css/layui.css">
+	<link rel="stylesheet" href="css/options.css">
 	<title>配置</title>
 </head>
 <body>
+<div id='main'>
+  <div class="layui-row">
+    <div class="layui-main" style="left:5%; width:90%; border:0">
+        <h1>配置页</h1>
+    </div>
+  </div>
   <div class="layui-row">
     <div class="layui-main" style="left:40px">
-        <h1 class="site-h1">配置页</h1>
+        <h2>编辑监听通知</h2>
     </div>
+	<table class="layui-table" lay-size=sm lay-skin="nob">
+	    <thead>
+            <tr>
+              <th>来源</th>
+              <th>名称</th>
+              <th>地址url</th>
+			  <th><button type="button" class="layui-btn layui-btn-primary layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></th>
+            </tr> 
+          </thead>
+		  <tbody>
+            <tr>
+              <td name="source"></td>
+              <td name="name"></td>
+              <td name="url"></td>
+              <td name="edit">
+			    <div class="layui-btn-group hid">
+				  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+					<i class="layui-icon">&#xe642;</i>
+				  </button>
+				  <button type="button" class="layui-btn layui-btn-primary layui-btn-sm">
+					<i class="layui-icon">&#xe640;</i>
+				  </button>
+				</div>
+			  </td>
+            </tr>
+          </tbody>
+	</table>
   </div>
   <div class="layui-row">
     <form class="layui-form" lay-filter="main" action="" method="post">
@@ -32,9 +66,38 @@
           <input type="checkbox" name="搜索提示" lay-skin="switch" lay-text="开启|关闭" checked>
         </div>
     </div>
-	
     </form>
   </div>
+</div>
+<div id="extra" class="hid">
+    <form class="layui-form" action="">
+	       <div class="layui-form-item">
+			<label class="layui-form-label">来源</label>
+			<div class="layui-input-block">
+			  <select name="city" lay-verify="required">
+			  </select>
+			</div>
+		   </div>
+		   <div class="layui-form-item">
+			<label class="layui-form-label">名称</label>
+			<div class="layui-input-block">
+			  <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+			</div>
+		   </div>
+		     <div class="layui-form-item">
+		   <label class="layui-form-label">地址url</label>
+			<div class="layui-input-block">
+			  <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+			</div>
+		   </div>
+		  <div class="layui-form-item">
+			<div class="layui-input-block">
+			  <button class="layui-btn" lay-submit lay-filter="formDemo">保存</button>
+			  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		  </div>
+	</form>
+</div>
 <script src="layui/layui.js"></script>
 <script src="js/options.js"></script>
 </body>
