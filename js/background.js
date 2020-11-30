@@ -9,7 +9,7 @@ chrome.omnibox.onInputChanged.addListener((text, suggest) => {
 	{
 		sgmsgs=[];
 		NotifyServer.messages.forEach((item,index,array)=>{
-			if(item.message>text||item.title>text)
+			if(item.message.search(text)>-1||item.title.search(text)>-1)
 				sgmsgs.push({content:item.url,description:item.title+': '+item.message});
 		});
 		suggest(sgmsgs);
@@ -177,10 +177,10 @@ NotifyServer.start = function(interval){
 					msglist=[];
 					tarmsgs.map((e,index)=>{message:msglist.push({title:NotifyServer.targets[i].name,message:e.message})});
 					console.log(msglist);
-					notify_many(title, msglist, icon);
+					notify_many(title, msglist, NotifyServer.targets[i].iconurl);
 				}
 				else if(tarmsgs.length==1)
-					notify(NotifyServer.targets[i].name,tarmsgs[0].message);
+					notify(NotifyServer.targets[i].name,tarmsgs[0].message, NotifyServer.targets[i].iconurl);
 			});
 		}
 		/*
@@ -211,18 +211,20 @@ var target={
 	tag:'',  //通知来源，如"中南大学信息学院"之类， 因为对不同通知的获取程序需要分别设计，因此要加以区分
 	root_url:'',  //根路径，用于保证添加的路径与队友的来源相同
 	url:'',  //通知路径，监听将对具体路径内的消息列表进行监听
+	iconurl:icon,
 	get:function(lasttime){},  //获取通知的具体方法，需要具体实现。该方法的返回值需要包括是否有新通知，每个新通知的标题以及可能的图片等
 					           //参数为上次获取时间。返回一个message列表，message内容见上
 	/* 用户名和密码，因为部分路径需要登陆才能获取。然而直接保存用户名和密码的方式对于用户可能并不安全，以及现在的许多登陆模式需要验证，因此该方案仅做保留
 	id='';
 	passwd=''
 	*/
-	newtag:function(tag, root_url, getf){
+	newtag:function(tag, root_url, getf, iconurl){
 		//用于产生一条新的监听类型
 		res = this;
 		res.tag = tag;
 		res.root_url = root_url;
 		res.get = getf;
+		res.iconurl = iconurl;
 		return res;
 	},
 	create:function(name, url){
@@ -243,21 +245,25 @@ alltags = {}; //tag名为键，值为对应的target对象
 alltags['中南大学计算机院']=target.newtag('中南大学计算机院','https://cse.csu.edu.cn/',async function(lasttime,callback){
 	if(!check_url(this.url))
 		return;
+	name = this.name;
 	await $.get(this.url,function(data){
 		dd=parseDom(data);
 		remsg = [];
-		name = this.name;
 		dd.find('.download:first ul li').each(function(){
-			msg = new message(title=name,msg=$(this).children('a').text(),time=new Date($(this).children('span').text()),url=$(this).children('a').attr('href'));
+			msg = new message(title=name,msg=$(this).children('a').text(),time=new Date($(this).children('span').text()),url='https://cse.csu.edu.cn/'+$(this).children('a').attr('href'));
 			if(new Date(msg.time)>lasttime)
 				remsg.push(msg);
 		});
 		console.log(remsg.length);
 		callback(remsg);
 	});
-});
+}, 'https://cse.csu.edu.cn/images/logo.png');
 NotifyServer.targets.push(alltags['中南大学计算机院'].create('通知公告','https://cse.csu.edu.cn/index/tzgg.htm'));
 
+function gettargets()
+{
+	return NotifyServer.targets;
+}
 //设置等待爬取链接
 function settargets(tarlist,callback)
 {
